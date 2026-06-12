@@ -1,0 +1,24 @@
+[project]
+name = "anystat"
+version = "0.1.0"
+description = "Lightweight analytics library for Telegram bots built with aiogram 3"
+readme = "README.md"
+authors = [
+    { name = "vexie", email = "vexiedesing@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "aiogram>=3.28.2",
+    "httpx>=0.28.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.16,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.15.16",
+]
