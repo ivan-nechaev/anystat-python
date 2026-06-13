@@ -2,13 +2,11 @@ from __future__ import annotations
 
 import os
 
-from aiogram import Dispatcher
-
 from .errors import AnystatError
 from ._constants import ENV_API_KEY
 
 
-class Anystat():
+class Anystat:
 	"""Anystat client.
 	
 	>>> from anystat import Anystat, setup_anystat

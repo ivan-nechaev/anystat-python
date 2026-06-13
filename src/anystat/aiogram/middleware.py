@@ -24,5 +24,26 @@ class AnystatMiddleware(BaseMiddleware):
 		return await handler(event, data)
 	
 
-	def _get_event_model(self, update: Update) -> BaseEvent:
-		pass
+	def _get_event_model(self, event: Update) -> BaseEvent | None:
+		"""Selects the matching event model for the Update."""
+		
+		#CommandStart
+		if event.message and event.message.text == "/start":
+			pass
+		
+		#Message
+		elif event.message:
+			pass
+
+		#Command
+		elif event.message and event.message.text.startswith("/"):
+			pass
+
+		#CallbackQuery
+		elif event.callback_query:
+			pass
+
+		#MyChatMember
+		elif event.my_chat_member:
+			pass
+
