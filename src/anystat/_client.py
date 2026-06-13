@@ -23,8 +23,31 @@ class Anystat:
 			>>> setup_anystat(dp, anystat)
 
 	Attributes:
-			api_key (str):
-					Your Anystat API key. 
+			debug (bool):
+					If True, enables debug mode. In this mode, Anystat will print
+					to the console every event being tracked and the exact data
+					that is being sent to the server. Useful for development and
+					for understanding what information is collected.
+
+			api_key (str | None):
+					Your Anystat API key. Can also be passed directly to `Anystat(...)`
+					or set via the `ANYSTAT_API_KEY` environment variable.
+
+			track_start (bool):
+					Whether to automatically track the `/start` command.
+					Enabled by default.
+
+			track_callback_query (bool):
+					Whether to automatically track clicks on inline keyboard buttons
+					(callback queries). Enabled by default.
+
+			track_messages (bool):
+					Whether to automatically track all incoming text messages.
+					Disabled by default for privacy reasons.
+
+			auto_identify (bool):
+					Whether to automatically call `identify()` when a user first
+					interacts with the bot. Disabled by default for privacy reasons. 
 	"""
 
 	def __init__(
@@ -32,8 +55,14 @@ class Anystat:
 		*,
 		api_key: str | None = None,
 		config: AnystatConfig | None = None,
-		debug: bool = False
+
+		debug: bool = None,
+		track_start: bool = None,
+		track_callback_query: bool = None,
+		track_messages: bool = None,
+		auto_identify: bool = ...
 	) -> None:
+		
 		key = api_key if api_key is not None else os.environ.get(ENV_API_KEY)
 		if not key:
 			raise AnystatError(
@@ -41,5 +70,12 @@ class Anystat:
 				f"or set the {ENV_API_KEY} envirnment variable."
 			)
 		
-		self.api_key: str = key
-		self.debug = debug
+		self.api_key=key
+
+		base_config = config or AnystatConfig()
+
+		self.debug = debug if debug is not None else base_config.debug
+		self.track_start = track_start if track_start is not None else base_config.track_start
+		self.track_callback_query = track_callback_query if track_callback_query is not None else base_config.track_callback_query
+		self.track_messages = track_messages if track_messages is not None else base_config.track_messages
+		self.auto_identify = auto_identify if auto_identify is not None else base_config.auto_identify
