@@ -2,23 +2,37 @@ from __future__ import annotations
 
 import os
 
+from ._config import AnystatConfig
 from .errors import AnystatError
 from ._constants import ENV_API_KEY
 
 
 class Anystat:
-	"""Anystat client.
-	
-	>>> from anystat import Anystat, setup_anystat
-	>>> anystat = Anystat(...)
-	>>> setup_anystat(anystat, dp)
+	"""
+	Main client for Anystat — analytics for Telegram bots.
+
+	It supports both simple configuration via parameters and more advanced
+	configuration via the `AnystatConfig` class.
+
+	You can either pass parameters directly to the constructor or create
+	a config object and pass it via the `config` argument.
+
+	Example:
+			>>> from anystat import Anystat, setup_anystat
+			>>> anystat = Anystat(api_key=..., debug=True)
+			>>> setup_anystat(dp, anystat)
+
+	Attributes:
+			api_key (str):
+					Your Anystat API key. 
 	"""
 
 	def __init__(
 		self,
 		*,
 		api_key: str | None = None,
-		debug: bool = False,
+		config: AnystatConfig | None = None,
+		debug: bool = False
 	) -> None:
 		key = api_key if api_key is not None else os.environ.get(ENV_API_KEY)
 		if not key:
