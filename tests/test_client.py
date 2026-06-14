@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from anystat import AnystatError, Anystat
+from anystat import AnystatError, Anystat, AnystatConfig
 
 
 def test_requires_api_key(monkeypatch):
@@ -22,3 +22,14 @@ def test_api_key_from_init():
 	anystat = Anystat(api_key="TEST_API_KEY")
 	assert anystat.api_key == "TEST_API_KEY"
 	
+def test_config():
+	config = AnystatConfig(
+		debug=True,
+		auto_identify=True,
+		track_messages=True
+	)
+	anystat = Anystat(api_key="API_KEY", config=config)
+
+	assert anystat.debug == True
+	assert anystat.track_messages == True
+	assert anystat.auto_identify == True

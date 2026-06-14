@@ -60,7 +60,7 @@ class Anystat:
 		track_start: bool = None,
 		track_callback_query: bool = None,
 		track_messages: bool = None,
-		auto_identify: bool = ...
+		auto_identify: bool = None
 	) -> None:
 		
 		key = api_key if api_key is not None else os.environ.get(ENV_API_KEY)
