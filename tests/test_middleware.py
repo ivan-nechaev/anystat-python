@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock
 
-from anystat.aiogram._models.models import CallbackQueryEvent, CommandEvent, MessageEvent, StartCommandEvent
+from anystat._models.models import CallbackQueryEvent, CommandEvent, MessageEvent, StartCommandEvent
 from anystat.aiogram.middleware import AnystatMiddleware
 import pytest
 

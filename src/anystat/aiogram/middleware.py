@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, NotRequired
 
 from aiogram import BaseMiddleware, Dispatcher
 from aiogram.types import CallbackQuery, ChatMemberUpdated, Message, Update
-from ._models.models import CallbackQueryEvent, CommandEvent, IdentifiedUser, MessageEvent, MyChatMemberEvent, StartCommandEvent
+from .._models.models import CallbackQueryEvent, CommandEvent, IdentifiedUser, MessageEvent, MyChatMemberEvent, StartCommandEvent
 from .._client import Anystat
 from aiogram.dispatcher.middlewares.data import MiddlewareData
 

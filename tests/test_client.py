@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 from anystat import AnystatError, Anystat, AnystatConfig
+from anystat._models.models import CustomEvent
 
 
 def test_requires_api_key(monkeypatch):
@@ -34,3 +35,17 @@ def test_config():
 	assert anystat.track_messages == True
 	assert anystat.auto_identify == True
 
+def test_custom_event():
+	anystat = Anystat(api_key="TEST_API_KEY")
+	result = anystat.track(
+		"test_event",
+		user_id=52,
+		price=290,
+		amount=10
+	)
+
+	assert isinstance(result, CustomEvent)
+	assert result.properties == {
+		"price": 290,
+		"amount": 10
+	}

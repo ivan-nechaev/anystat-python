@@ -1,9 +1,12 @@
 from __future__ import annotations
 from enum import Enum
-from typing import Literal, Optional
+import time
+from typing import Any, Literal, TypeAlias
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 from ._base import AnystatModel
+
+
 
 
 class EventType(str, Enum):
@@ -69,3 +72,22 @@ class StartCommandEvent(BaseMessageEvent):
 	"""Pydantic data model for the /start command event received from a Telegram user."""
 	event_type: Literal[EventType.START_COMMAND] = EventType.START_COMMAND
 	start_param: str | None = None
+
+
+class CustomEvent(AnystatModel):
+	"""Pydantic data model for a custom event."""
+	name: str
+	user_id: int | None = None
+	received_at: int = int(time.time())
+	properties: dict[str, Any]
+
+
+
+Event: TypeAlias = (
+	MessageEvent
+	| CallbackQueryEvent
+	| MyChatMemberEvent
+	| CommandEvent
+	| StartCommandEvent
+	| CustomEvent
+)

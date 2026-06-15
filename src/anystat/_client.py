@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import os
+import httpx
+
+from ._models.models import CustomEvent
 
 from ._config import AnystatConfig
 from .errors import AnystatError
-from ._constants import ENV_API_KEY
+from ._constants import DEFAULT_TIMEOUT, ENV_API_KEY
 
 
 class Anystat:
@@ -65,7 +68,8 @@ class Anystat:
 		track_callback_query: bool = None,
 		track_messages: bool = None,
 		track_command: bool = None,
-		auto_identify: bool = None
+		auto_identify: bool = None,
+
 	) -> None:
 		
 		key = api_key if api_key is not None else os.environ.get(ENV_API_KEY)
@@ -75,7 +79,8 @@ class Anystat:
 				f"or set the {ENV_API_KEY} envirnment variable."
 			)
 		
-		self.api_key=key
+		self.api_key = key
+		self._http = httpx.AsyncClient(timeout=DEFAULT_TIMEOUT)
 
 		base_config = config or AnystatConfig()
 
@@ -85,3 +90,12 @@ class Anystat:
 		self.track_callback_query = track_callback_query if track_callback_query is not None else base_config.track_callback_query
 		self.track_messages = track_messages if track_messages is not None else base_config.track_messages
 		self.auto_identify = auto_identify if auto_identify is not None else base_config.auto_identify
+
+
+	def track(self, name: str, user_id: int | None, **kwargs):
+		return CustomEvent(
+			name=name,
+			user_id=user_id,
+			properties=kwargs
+		)
+	
