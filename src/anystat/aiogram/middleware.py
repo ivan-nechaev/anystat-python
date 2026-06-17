@@ -2,18 +2,17 @@ from __future__ import annotations
 import time
 from typing import Any, Awaitable, Callable, NotRequired
 
-from aiogram import BaseMiddleware, Dispatcher
+from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, ChatMemberUpdated, Message, Update
 from .._models.models import CallbackQueryEvent, CommandEvent, IdentifiedUser, MessageEvent, MyChatMemberEvent, StartCommandEvent
 from .._client import Anystat
 from aiogram.dispatcher.middlewares.data import MiddlewareData
 
-dp = Dispatcher()
 
 class AnystatMiddlewareData(MiddlewareData, total=False):
 	"""Expanded MiddlewareData for AnystatMiddleware."""
-	received_at = NotRequired[int]
-	duration = NotRequired[float]
+	received_at: NotRequired[int]
+	duration: NotRequired[float]
 
 
 
@@ -34,7 +33,7 @@ class AnystatMiddleware(BaseMiddleware):
 		try:
 			return await handler(event, data)
 		finally:
-			duration = round(time.perf_counter() - start, 3) * 1000 #ms
+			duration = int((time.perf_counter() - start) * 1000)  # ms
 			
 			event_model = self._get_event_model(event, received_at, duration) 
 

@@ -78,7 +78,7 @@ class CustomEvent(AnystatModel):
 	"""Pydantic data model for a custom event."""
 	name: str
 	user_id: int | None = None
-	received_at: int = int(time.time())
+	received_at: int = Field(default_factory=lambda: int(time.time()))
 	properties: dict[str, Any]
 
 

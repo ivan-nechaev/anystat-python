@@ -32,7 +32,7 @@ class AnystatBatcher(Generic[T]):
 
 			if len(self._buffer) >= self._max_batch_size:
 				batch = self._buffer
-				self._buffer.clear()
+				self._buffer = []
 			else:
 				batch = []
 
@@ -67,5 +67,5 @@ class AnystatBatcher(Generic[T]):
 			if not self._buffer:
 				return None
 			batch = self._buffer
-			self._buffer.clear()
+			self._buffer = []
 		await self._flush_batch(batch)

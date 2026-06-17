@@ -66,12 +66,12 @@ class Anystat:
 		api_key: str | None = None,
 		config: AnystatConfig | None = None,
 
-		debug: bool = None,
-		track_start: bool = None,
-		track_callback_query: bool = None,
-		track_messages: bool = None,
-		track_command: bool = None,
-		auto_identify: bool = None,
+		debug: bool | None = None,
+		track_start: bool | None = None,
+		track_callback_query: bool | None = None,
+		track_messages: bool | None = None,
+		track_command: bool | None = None,
+		auto_identify: bool | None = None,
 
 	) -> None:
 		
