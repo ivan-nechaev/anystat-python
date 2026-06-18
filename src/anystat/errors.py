@@ -4,3 +4,4 @@ __all__ = [
 
 class AnystatError(Exception):
 	"""Base class for errors raised by the Anystat."""
+	pass

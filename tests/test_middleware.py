@@ -1,8 +1,13 @@
-
-
 from unittest.mock import MagicMock
 
-from anystat._models.models import CallbackQueryEvent, CommandEvent, MessageEvent, StartCommandEvent
+from anystat._models.models import (
+	CallbackQueryEvent,
+	CommandEvent,
+	MessageEvent,
+	MyChatMemberEvent,
+	StartCommandEvent
+)
+
 from anystat.aiogram.middleware import AnystatMiddleware
 import pytest
 
@@ -117,3 +122,14 @@ def test_get_callback_query(middleware):
 	assert result.inline_message_id == "123"
 	assert mock_callback.data == "action"
 
+def test_get_my_chat_member(middleware):
+	mock_member = MagicMock()
+	mock_member.from_user.id = 52
+	mock_member.old_chat_member.status = 'member'
+	mock_member.new_chat_member.status = 'kicked'
+
+	result = middleware._get_my_chat_member_event(mock_member, received_at=10, duration=230)
+	
+	assert isinstance(result, MyChatMemberEvent)
+	assert result.old_status == 'member'
+	assert result.new_status == 'kicked'
