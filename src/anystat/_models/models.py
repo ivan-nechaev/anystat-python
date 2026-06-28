@@ -15,6 +15,7 @@ class EventType(str, Enum):
 	MY_CHAT_MEMBER = "my_chat_member"
 	COMMAND = "command"
 	START_COMMAND = "start_command"
+	CUSTOM = "custom"
 
 MyChatMemberStatus = Literal[
 	"creator",
@@ -76,7 +77,8 @@ class StartCommandEvent(BaseMessageEvent):
 
 class CustomEvent(AnystatModel):
 	"""Pydantic data model for a custom event."""
-	name: str
+	event_type: Literal[EventType.CUSTOM] = EventType.CUSTOM
+	custom_name: str
 	user_id: int | None = None
 	received_at: int = Field(default_factory=lambda: int(time.time()))
 	properties: dict[str, Any]

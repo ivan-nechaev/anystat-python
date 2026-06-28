@@ -35,7 +35,10 @@ class AnystatConfig:
 
 			auto_identify (bool):
 					Whether to automatically call `identify()` when a user first
-					interacts with the bot. Disabled by default for privacy reasons.
+					interacts with the bot.
+
+					Not available in this version — `user profile collection is
+					under legal review and will be enabled in a future release.
 	"""
 	debug: bool = False
 	track_start: bool = True

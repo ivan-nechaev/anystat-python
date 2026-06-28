@@ -27,29 +27,25 @@ def test_api_key_from_init():
 def test_config():
 	config = AnystatConfig(
 		debug=True,
-		auto_identify=True,
 		track_messages=True
 	)
 	anystat = Anystat(api_key="API_KEY", config=config)
 
 	assert anystat.debug == True
 	assert anystat.track_messages == True
-	assert anystat.auto_identify == True
 
-def test_custom_event():
+@pytest.mark.asyncio
+async def test_custom_event():
 	anystat = Anystat(api_key="TEST_API_KEY")
-	result = anystat.track(
+	await anystat.track(
 		"test_event",
 		user_id=52,
 		price=290,
 		amount=10
 	)
 
-	assert isinstance(result, CustomEvent)
-	assert result.properties == {
-		"price": 290,
-		"amount": 10
-	}
+	assert isinstance(anystat._event_batcher._buffer[-1], CustomEvent)
+	assert anystat._event_batcher._buffer[-1].properties["price"] == 290
 
 @pytest.mark.asyncio
 async def test_close():

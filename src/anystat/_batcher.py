@@ -1,5 +1,6 @@
 import asyncio
-from typing import Generic, TypeVar
+from typing import Awaitable, Callable, Generic, TypeVar
+from ._models.models import Event
 
 T = TypeVar("T")
 
@@ -15,13 +16,19 @@ class AnystatBatcher(Generic[T]):
 	when the time interval has passed.
 	"""
 
-	def __init__(self, max_batch_size: int, flush_interval: float):
+	def __init__(
+			self,
+			max_batch_size: int,
+			flush_interval: float,
+			flush_callback: Callable[[list[T]], Awaitable[None]]
+		):
 		self._buffer: list[T] = []
 		self._running = True
 		self._lock = asyncio.Lock()
 		self._max_batch_size = max_batch_size 
 		self._flush_interval = flush_interval
 		self._worker_task: asyncio.Task | None = None
+		self._flush_callback = flush_callback
 
 	async def add(self, item: T):
 		if self._worker_task is None:
@@ -61,6 +68,7 @@ class AnystatBatcher(Generic[T]):
 			return None
 		
 		print(f'Отправил {len(batch)} событий на сервер') # TODO: Здесь надо отправить
+		await self._flush_callback(batch)
 
 	async def flush(self) -> None:
 		async with self._lock:

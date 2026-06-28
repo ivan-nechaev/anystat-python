@@ -34,18 +34,17 @@ class AnystatMiddleware(BaseMiddleware):
 			return await handler(event, data)
 		finally:
 			duration = int((time.perf_counter() - start) * 1000)  # ms
-			
 			event_model = self._get_event_model(event, received_at, duration) 
 
 			if isinstance(event_model, StartCommandEvent):
 				identified_user = self._identify(data) #Auto identify user
-				print(identified_user)
+				# print(identified_user)
 
 			data["received_at"] = received_at
 			data["duration"] = duration
 
-			#TODO: Отправка на сервер
-			print(event_model)
+			if event_model is not None:
+				await self.anystat._event_batcher.add(event_model)
 			
 
 	def _get_event_model(self, event: Update, received_at: int, duration: float):

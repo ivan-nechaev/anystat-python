@@ -11,7 +11,7 @@ from anystat._models.models import CustomEvent
 def event():
 	"""Фикстура с тестовым событием."""
 	return CustomEvent(
-			name="test",
+			custom_name="test",
 			user_id=52,
 			received_at=1,
 			properties={"test": 1}
@@ -20,9 +20,14 @@ def event():
 @pytest_asyncio.fixture
 async def batcher():
 	"""Фикстура с батчером."""
+	async def _flush(events: list[CustomEvent]):
+		"""Пустой flush для тестов (ничего не делает)."""
+		pass
+
 	_batcher = AnystatBatcher(
 		max_batch_size=10,
-		flush_interval=10.0
+		flush_interval=10.0,
+		flush_callback=_flush
 	)
 	yield _batcher
 	if _batcher._worker_task: await _batcher.kill()
