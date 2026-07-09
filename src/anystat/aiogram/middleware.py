@@ -45,7 +45,7 @@ class AnystatMiddleware(BaseMiddleware):
 
 			if event_model is not None:
 				await self.anystat._event_batcher.add(event_model)
-			
+				self.anystat._debug(f"capture {event_model.event_type.value} via AnystatMiddleware", event_model)
 
 	def _get_event_model(self, event: Update, received_at: int, duration: float):
 		if event.message:
@@ -67,6 +67,7 @@ class AnystatMiddleware(BaseMiddleware):
 		# /start
 		if text.startswith("/start"):
 			if not self.anystat.track_start:
+				self.anystat._debug(f"skip /start from user={user_id} (track_start=off)")
 				return None #Start command is disabled
 			parts = text.split(maxsplit=1)
 			start_param = parts[1] if len(parts) > 1 else None
@@ -82,6 +83,7 @@ class AnystatMiddleware(BaseMiddleware):
 		# Another command
 		elif text.startswith("/"):
 			if not self.anystat.track_command:
+				self.anystat._debug(f"skip command from user={user_id} (track_command=off)")
 				return None #Commands are disabled
 
 			command = text.split()[0]
@@ -95,6 +97,7 @@ class AnystatMiddleware(BaseMiddleware):
 		
 		else:
 			if not self.anystat.track_messages:
+				self.anystat._debug(f"skip message from user={user_id} (track_messages=off, text not collected)")
 				return None #Messages is disabled
 			
 			return MessageEvent(
@@ -107,6 +110,7 @@ class AnystatMiddleware(BaseMiddleware):
 		
 	def _get_callback_query_event(self, callback: CallbackQuery, received_at: int, duration: float):
 		if not self.anystat.track_callback_query or not callback.from_user:
+			self.anystat._debug("skip callback_query (track_callback_query=off or no user)")
 			return None #Callback_query is disabled
 		
 		return CallbackQueryEvent(

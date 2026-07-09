@@ -66,9 +66,7 @@ class AnystatBatcher(Generic[T]):
 	async def _flush_batch(self, batch: list[T]) -> None:
 		if not batch:
 			return None
-		
-		print(f'Отправил {len(batch)} событий на сервер') # TODO: Здесь надо отправить
-		await self._flush_callback(batch)
+		await self._flush_callback(batch)		
 
 	async def flush(self) -> None:
 		async with self._lock:

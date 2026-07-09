@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 from typing import List, TypeVar
 import warnings
 import httpx
+from pydantic import BaseModel
 
 from ._batcher import AnystatBatcher
 from ._models.models import CustomEvent, Event
@@ -16,7 +18,24 @@ from ._constants import DEFAULT_BASE_URL, DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT, 
 
 T = TypeVar("T")
 
+def _mask(key: str) -> str:
+    return f"{key[:4]}…{key[-4:]}" if len(key) > 8 else "***"
+
 logger = logging.getLogger("anystat")
+def _enable_debug_logging() -> None:
+	logger.setLevel(logging.DEBUG)
+
+	user_configured = logging.getLogger().handlers or any(
+		not isinstance(h, logging.NullHandler) for h in logger.handlers
+	)
+
+	if user_configured:
+		return  # User have own logger
+
+	handler = logging.StreamHandler()
+	handler.setFormatter(logging.Formatter("[anystat] %(message)s"))
+	logger.addHandler(handler)
+
 class Anystat:
 	"""
 	Main client for Anystat — analytics for Telegram bots.
@@ -109,6 +128,20 @@ class Anystat:
 		self.track_callback_query = track_callback_query if track_callback_query is not None else base_config.track_callback_query
 		self.track_messages = track_messages if track_messages is not None else base_config.track_messages
 
+		self._debug(f"endpoing: {DEFAULT_BASE_URL} | api key: {_mask(self.api_key)}")
+		on = lambda f: "on" if f else "off"
+		self._debug(
+				f"auto-tracking: /start={on(self.track_start)} "
+				f"commands={on(self.track_command)} "
+				f"callbacks={on(self.track_callback_query)} "
+				f"messages={on(self.track_messages)}"
+		)
+
+
+		if self.debug:
+			_enable_debug_logging()
+
+
 		if auto_identify or base_config.auto_identify:
 			logger.warning(
 				"Auto_identify is not available in this version. User profile "
@@ -132,16 +165,19 @@ class Anystat:
 				)
 			except httpx.TimeoutException as e:
 				if attempt < self.max_retries:
-					await asyncio.sleep(retry_delay)
+					await asyncio.sleep(retry_delay(attempt))
+					self._debug(f"retry {attempt + 1}/{self.max_retries} in {retry_delay(attempt):.1f}s: timeout")
 					continue
 				raise APITimeoutError() from e
 			except httpx.HTTPError as e:
 				if attempt < self.max_retries:
-					await asyncio.sleep(retry_delay)
+					await asyncio.sleep(retry_delay(attempt))
+					self._debug(f"retry {attempt + 1}/{self.max_retries} in {retry_delay(attempt):.1f}s: connection error")
 					continue
 				raise APIConnectionError(str(e)) from e
 			if is_retry_status_code(response.status_code) and attempt < self.max_retries:
 				await asyncio.sleep(retry_delay(attempt))
+				self._debug(f"retry {attempt + 1}/{self.max_retries} in {retry_delay(attempt):.1f}s: status {response.status_code}")
 				continue
 			response.raise_for_status()
 			return response
@@ -151,10 +187,20 @@ class Anystat:
 		payload = [e.model_dump() for e in events]
 		try:
 			await self._request("POST", "/v1/collect/events", json=payload)
+			self._debug(f"→ POST /v1/collect/events ({len(events)} events)", payload)
 		except (APITimeoutError, APIConnectionError, httpx.HTTPError) as e:
 			logger.warning("Failed to send events to Anystat (%d events): %s", len(events), e)
 		except Exception:
 			logger.exception("Unexpected error while sending to Anystat")
+
+	def _debug(self, msg: str, data: object = None) -> None:
+		if not self.debug: #Debug mode is disabled
+			return
+		if isinstance(data, BaseModel):
+			data = data.model_dump(mode="json")
+		if data is not None:
+			msg += "\n" + json.dumps(data, ensure_ascii=False, indent=2, default=str)
+		logger.debug(msg)
 
 	async def track(self, name: str, user_id: int | None, **kwargs):
 		event = CustomEvent(
@@ -163,9 +209,11 @@ class Anystat:
 			properties=kwargs
 		)
 		await self._event_batcher.add(event)
-	
+		self._debug(f"capture {event.event_type.value} via track()", event)
+
 
 	async def close(self) -> None:
+		self._debug("closing, flushing remaining events")
 		await self._event_batcher.kill()
 		await self._identify_batcher.kill()
 		await self._http.aclose()
