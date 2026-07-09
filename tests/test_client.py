@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from aiogram import Dispatcher
 import pytest
 from anystat import AnystatError, Anystat, AnystatConfig
 from anystat._models.models import CustomEvent
@@ -31,8 +30,8 @@ def test_config():
 	)
 	anystat = Anystat(api_key="API_KEY", config=config)
 
-	assert anystat.debug == True
-	assert anystat.track_messages == True
+	assert anystat.debug
+	assert anystat.track_messages
 
 @pytest.mark.asyncio
 async def test_custom_event():
@@ -51,9 +50,9 @@ async def test_custom_event():
 async def test_close():
 	anystat = Anystat(api_key='API_KEY')
 
-	assert anystat._http.is_closed == False
+	assert not anystat._http.is_closed
 	await anystat.close()
 
-	assert anystat._http.is_closed == True
-	assert anystat._event_batcher._running == False
-	assert anystat._identify_batcher._running == False
+	assert anystat._http.is_closed
+	assert not anystat._event_batcher._running
+	assert not anystat._identify_batcher._running

@@ -1,6 +1,5 @@
 import asyncio
 from typing import Awaitable, Callable, Generic, TypeVar
-from ._models.models import Event
 
 T = TypeVar("T")
 
@@ -49,7 +48,8 @@ class AnystatBatcher(Generic[T]):
 	async def _worker(self) -> None:
 		while self._running:
 			await asyncio.sleep(self._flush_interval)
-			if len(self._buffer) < 1: continue
+			if len(self._buffer) < 1:
+				continue
 			
 			await self.flush()
 

@@ -1,5 +1,4 @@
 import asyncio
-from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
@@ -30,7 +29,8 @@ async def batcher():
 		flush_callback=_flush
 	)
 	yield _batcher
-	if _batcher._worker_task: await _batcher.kill()
+	if _batcher._worker_task:
+		await _batcher.kill()
 
 
 

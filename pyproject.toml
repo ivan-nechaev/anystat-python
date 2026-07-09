@@ -10,7 +10,23 @@ requires-python = ">=3.12"
 dependencies = [
     "aiogram>=3.28.2",
     "httpx>=0.28.1",
+    "pydantic>=2"
 ]
+
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["telegram", "aiogram", "analytics", "bot", "statistics"]
+classifiers = [
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/ivan-nechaev/anystat-python"
+Repository = "https://github.com/ivan-nechaev/anystat-python"
+Issues = "https://github.com/ivan-nechaev/anystat-python/issues"
 
 [build-system]
 requires = ["uv_build>=0.11.16,<0.12.0"]

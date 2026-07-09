@@ -37,7 +37,7 @@ class AnystatMiddleware(BaseMiddleware):
 			event_model = self._get_event_model(event, received_at, duration) 
 
 			if isinstance(event_model, StartCommandEvent):
-				identified_user = self._identify(data) #Auto identify user
+				self._identify(data) #Auto identify user
 				# print(identified_user)
 
 			data["received_at"] = received_at
@@ -136,7 +136,8 @@ class AnystatMiddleware(BaseMiddleware):
 	
 
 	def _identify(self, data: MiddlewareData) -> IdentifiedUser | None:
-		if not self.anystat.auto_identify: return None
+		if not self.anystat.auto_identify:
+			return None
 		
 		user = data.get("event_from_user")
 		if not user: 

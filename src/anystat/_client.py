@@ -5,7 +5,6 @@ import json
 import logging
 import os
 from typing import List, TypeVar
-import warnings
 import httpx
 from pydantic import BaseModel
 
@@ -129,7 +128,8 @@ class Anystat:
 		self.track_messages = track_messages if track_messages is not None else base_config.track_messages
 
 		self._debug(f"endpoing: {DEFAULT_BASE_URL} | api key: {_mask(self.api_key)}")
-		on = lambda f: "on" if f else "off"
+		def on(f):
+			return "on" if f else "off"
 		self._debug(
 				f"auto-tracking: /start={on(self.track_start)} "
 				f"commands={on(self.track_command)} "
