@@ -1,4 +1,9 @@
-# Anystat
+<div align='center'>
+
+<h1 style='border-bottom: none; margin-bottom: -5px'>Anystat</h1>
+<!-- ### Anystat -->
+
+**Лёгкая privacy-first аналитика для Telegram-ботов на [aiogram 3](https://github.com/aiogram/aiogram).**
 
 [![PyPI](https://img.shields.io/pypi/v/anystat)](https://pypi.org/project/anystat/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)](https://pypi.org/project/anystat/)
@@ -6,8 +11,13 @@
 [![CI](https://github.com/ivan-nechaev/anystat-python/actions/workflows/ci.yml/badge.svg)](https://github.com/ivan-nechaev/anystat-python/actions/workflows/ci.yml)
 
 [English](README.md) | Русский
+</div>
 
-**Лёгкая privacy-first аналитика для Telegram-ботов на [aiogram 3](https://github.com/aiogram/aiogram).**
+<p align="center">
+  <a href="https://anystat.me"><img src="docs/dashboard.png" alt="Дашборд Anystat — десктоп и мобильная версия" width="800"></a>
+</p>
+
+
 
 Добавьте две строки кода — и узнайте, как люди на самом деле пользуются вашим ботом: источники `/start` и диплинки, использование команд, нажатия кнопок, блокировки и возвращения — всё в вашем дашборде [Anystat](https://anystat.me).
 

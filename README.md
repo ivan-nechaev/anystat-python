@@ -1,4 +1,8 @@
-# Anystat
+<div align='center'>
+
+<h1 style='border-bottom: none; margin-bottom: -5px'>Anystat</h1>
+
+**Lightweight, privacy-first analytics for Telegram bots built with [aiogram 3](https://github.com/aiogram/aiogram).**
 
 [![PyPI](https://img.shields.io/pypi/v/anystat)](https://pypi.org/project/anystat/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)](https://pypi.org/project/anystat/)
@@ -6,8 +10,13 @@
 [![CI](https://github.com/ivan-nechaev/anystat-python/actions/workflows/ci.yml/badge.svg)](https://github.com/ivan-nechaev/anystat-python/actions/workflows/ci.yml)
 
 English | [Русский](README.ru.md)
+</div>
 
-**Lightweight, privacy-first analytics for Telegram bots built with [aiogram 3](https://github.com/aiogram/aiogram).**
+<p align="center">
+  <a href="https://anystat.me"><img src="docs/dashboard.png" alt="Дашборд Anystat — десктоп и мобильная версия" width="800"></a>
+</p>
+
+
 
 Add two lines of code and see how people actually use your bot: `/start` sources and deep links, command usage, button clicks, blocks and unblocks — all in your [Anystat](https://anystat.me) dashboard.
 
